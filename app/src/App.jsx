@@ -2,33 +2,33 @@ import { useState } from 'react';
 import './App.css';
 
 function App() {
-  // Danh sách sinh viên
+  // Danh sách sinh viên mẫu
   const [students, setStudents] = useState([
     { id: 1, name: 'Nguyễn Văn A', class: 'CNTT1', age: 20 },
     { id: 2, name: 'Trần Thị B', class: 'CNTT2', age: 21 },
     { id: 3, name: 'Lê Văn C', class: 'CNTT1', age: 19 },
+    { id: 4, name: 'Phạm Thị D', class: 'CNTT3', age: 22 },
+    { id: 5, name: 'Đỗ Văn E', class: 'CNTT2', age: 20 },
+    { id: 6, name: 'Vũ Thị F', class: 'CNTT3', age: 21 },
+    { id: 7, name: 'Bùi Văn G', class: 'CNTT1', age: 23 },
   ]);
 
-  // State cho form thêm sinh viên
   const [name, setName] = useState('');
   const [className, setClassName] = useState('');
   const [age, setAge] = useState('');
 
-  // State cho form sửa sinh viên
   const [editId, setEditId] = useState(null);
   const [editName, setEditName] = useState('');
   const [editClass, setEditClass] = useState('');
   const [editAge, setEditAge] = useState('');
 
-  // State cho tìm kiếm
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedClass, setSelectedClass] = useState('');
 
-  // Hàm xử lý xoá sinh viên
   const handleDelete = (id) => {
     setStudents(students.filter((student) => student.id !== id));
   };
 
-  // Hàm xử lý thêm sinh viên
   const handleAddStudent = (e) => {
     e.preventDefault();
     if (!name || !className || !age) {
@@ -47,7 +47,6 @@ function App() {
     setAge('');
   };
 
-  // Hàm bắt đầu chỉnh sửa
   const handleEdit = (student) => {
     setEditId(student.id);
     setEditName(student.name);
@@ -55,7 +54,6 @@ function App() {
     setEditAge(student.age);
   };
 
-  // Hàm lưu chỉnh sửa
   const handleSaveEdit = (e) => {
     e.preventDefault();
     if (!editName || !editClass || !editAge) {
@@ -75,7 +73,6 @@ function App() {
     setEditAge('');
   };
 
-  // Hàm hủy chỉnh sửa
   const handleCancelEdit = () => {
     setEditId(null);
     setEditName('');
@@ -83,9 +80,12 @@ function App() {
     setEditAge('');
   };
 
-  // Lọc danh sách sinh viên dựa trên tìm kiếm
-  const filteredStudents = students.filter((student) =>
-    student.name.toLowerCase().includes(searchTerm.toLowerCase())
+  const classList = [...new Set(students.map((student) => student.class))];
+
+  const filteredStudents = students.filter(
+    (student) =>
+      student.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+      (selectedClass === '' || student.class === selectedClass)
   );
 
   return (
@@ -128,8 +128,8 @@ function App() {
         </form>
       </div>
 
-      {/* Ô tìm kiếm */}
-      <div className="max-w-4xl mx-auto mb-6">
+      {/* Tìm kiếm và lọc lớp */}
+      <div className="max-w-4xl mx-auto mb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
         <input
           type="text"
           placeholder="Tìm kiếm theo tên..."
@@ -137,6 +137,18 @@ function App() {
           onChange={(e) => setSearchTerm(e.target.value)}
           className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-sm"
         />
+        <select
+          value={selectedClass}
+          onChange={(e) => setSelectedClass(e.target.value)}
+          className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-sm"
+        >
+          <option value="">-- Tất cả các lớp --</option>
+          {classList.map((className, index) => (
+            <option key={index} value={className}>
+              {className}
+            </option>
+          ))}
+        </select>
       </div>
 
       {/* Bảng danh sách sinh viên */}
