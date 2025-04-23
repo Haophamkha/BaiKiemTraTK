@@ -1,17 +1,22 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './App.css';
 
 function App() {
-  // Danh sách sinh viên mẫu
-  const [students, setStudents] = useState([
-    { id: 1, name: 'Nguyễn Văn A', class: 'CNTT1', age: 20 },
-    { id: 2, name: 'Trần Thị B', class: 'CNTT2', age: 21 },
-    { id: 3, name: 'Lê Văn C', class: 'CNTT1', age: 19 },
-    { id: 4, name: 'Phạm Thị D', class: 'CNTT3', age: 22 },
-    { id: 5, name: 'Đỗ Văn E', class: 'CNTT2', age: 20 },
-    { id: 6, name: 'Vũ Thị F', class: 'CNTT3', age: 21 },
-    { id: 7, name: 'Bùi Văn G', class: 'CNTT1', age: 23 },
-  ]);
+  // Khởi tạo danh sách sinh viên từ localStorage hoặc danh sách mẫu
+  const [students, setStudents] = useState(() => {
+    const savedStudents = localStorage.getItem('students');
+    return savedStudents
+      ? JSON.parse(savedStudents)
+      : [
+          { id: 1, name: 'Nguyễn Văn A', class: 'CNTT1', age: 20 },
+          { id: 2, name: 'Trần Thị B', class: 'CNTT2', age: 21 },
+          { id: 3, name: 'Lê Văn C', class: 'CNTT1', age: 19 },
+          { id: 4, name: 'Phạm Thị D', class: 'CNTT3', age: 22 },
+          { id: 5, name: 'Đỗ Văn E', class: 'CNTT2', age: 20 },
+          { id: 6, name: 'Vũ Thị F', class: 'CNTT3', age: 21 },
+          { id: 7, name: 'Bùi Văn G', class: 'CNTT1', age: 23 },
+        ];
+  });
 
   const [name, setName] = useState('');
   const [className, setClassName] = useState('');
@@ -24,6 +29,11 @@ function App() {
 
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedClass, setSelectedClass] = useState('');
+
+  // Lưu danh sách sinh viên vào localStorage mỗi khi students thay đổi
+  useEffect(() => {
+    localStorage.setItem('students', JSON.stringify(students));
+  }, [students]);
 
   const handleDelete = (id) => {
     setStudents(students.filter((student) => student.id !== id));
