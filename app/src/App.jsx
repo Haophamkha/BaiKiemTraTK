@@ -20,6 +20,9 @@ function App() {
   const [editClass, setEditClass] = useState('');
   const [editAge, setEditAge] = useState('');
 
+  // State cho tìm kiếm
+  const [searchTerm, setSearchTerm] = useState('');
+
   // Hàm xử lý xoá sinh viên
   const handleDelete = (id) => {
     setStudents(students.filter((student) => student.id !== id));
@@ -80,6 +83,11 @@ function App() {
     setEditAge('');
   };
 
+  // Lọc danh sách sinh viên dựa trên tìm kiếm
+  const filteredStudents = students.filter((student) =>
+    student.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="container mx-auto px-4 py-8 bg-gradient-to-b from-blue-50 to-white min-h-screen">
       <h1 className="text-4xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600 mb-10">
@@ -120,6 +128,17 @@ function App() {
         </form>
       </div>
 
+      {/* Ô tìm kiếm */}
+      <div className="max-w-4xl mx-auto mb-6">
+        <input
+          type="text"
+          placeholder="Tìm kiếm theo tên..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-sm"
+        />
+      </div>
+
       {/* Bảng danh sách sinh viên */}
       <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden">
         <table className="w-full text-left">
@@ -132,7 +151,7 @@ function App() {
             </tr>
           </thead>
           <tbody>
-            {students.map((student) => (
+            {filteredStudents.map((student) => (
               <tr
                 key={student.id}
                 className="border-b border-gray-100 hover:bg-blue-50 transition-colors duration-300"
