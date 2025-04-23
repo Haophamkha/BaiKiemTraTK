@@ -1,21 +1,21 @@
 import { useState, useEffect } from 'react';
 import './App.css';
+import StudentItem from './Components/StudentItem';
 
 function App() {
-  // Khởi tạo danh sách sinh viên từ localStorage hoặc danh sách mẫu
   const [students, setStudents] = useState(() => {
     const savedStudents = localStorage.getItem('students');
     return savedStudents
       ? JSON.parse(savedStudents)
       : [
-          { id: 1, name: 'Nguyễn Văn A', class: 'CNTT1', age: 20 },
-          { id: 2, name: 'Trần Thị B', class: 'CNTT2', age: 21 },
-          { id: 3, name: 'Lê Văn C', class: 'CNTT1', age: 19 },
-          { id: 4, name: 'Phạm Thị D', class: 'CNTT3', age: 22 },
-          { id: 5, name: 'Đỗ Văn E', class: 'CNTT2', age: 20 },
-          { id: 6, name: 'Vũ Thị F', class: 'CNTT3', age: 21 },
-          { id: 7, name: 'Bùi Văn G', class: 'CNTT1', age: 23 },
-        ];
+        { id: 1, name: 'Nguyễn Văn A', class: 'CNTT1', age: 20 },
+        { id: 2, name: 'Trần Thị B', class: 'CNTT2', age: 21 },
+        { id: 3, name: 'Lê Văn C', class: 'CNTT1', age: 19 },
+        { id: 4, name: 'Phạm Thị D', class: 'CNTT3', age: 22 },
+        { id: 5, name: 'Đỗ Văn E', class: 'CNTT2', age: 20 },
+        { id: 6, name: 'Vũ Thị F', class: 'CNTT3', age: 21 },
+        { id: 7, name: 'Bùi Văn G', class: 'CNTT1', age: 23 },
+      ];
   });
 
   const [name, setName] = useState('');
@@ -172,77 +172,26 @@ function App() {
               <th className="py-4 px-6 font-semibold text-sm uppercase tracking-wide">Hành động</th>
             </tr>
           </thead>
-          <tbody>
-            {filteredStudents.map((student) => (
-              <tr
-                key={student.id}
-                className="border-b border-gray-100 hover:bg-blue-50 transition-colors duration-300"
-              >
-                {editId === student.id ? (
-                  <>
-                    <td className="py-4 px-6">
-                      <input
-                        type="text"
-                        value={editName}
-                        onChange={(e) => setEditName(e.target.value)}
-                        className="border border-gray-300 rounded-lg px-2 py-1 w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
-                      />
-                    </td>
-                    <td className="py-4 px-6">
-                      <input
-                        type="text"
-                        value={editClass}
-                        onChange={(e) => setEditClass(e.target.value)}
-                        className="border border-gray-300 rounded-lg px-2 py-1 w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
-                      />
-                    </td>
-                    <td className="py-4 px-6">
-                      <input
-                        type="number"
-                        value={editAge}
-                        onChange={(e) => setEditAge(e.target.value)}
-                        className="border border-gray-300 rounded-lg px-2 py-1 w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
-                      />
-                    </td>
-                    <td className="py-4 px-6 flex gap-2">
-                      <button
-                        onClick={handleSaveEdit}
-                        className="bg-green-500 text-white px-4 py-2 rounded-full font-semibold hover:bg-green-600 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-green-300 shadow-md"
-                      >
-                        Lưu
-                      </button>
-                      <button
-                        onClick={handleCancelEdit}
-                        className="bg-gray-500 text-white px-4 py-2 rounded-full font-semibold hover:bg-gray-600 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-gray-300 shadow-md"
-                      >
-                        Hủy
-                      </button>
-                    </td>
-                  </>
-                ) : (
-                  <>
-                    <td className="py-4 px-6 text-gray-700 font-medium">{student.name}</td>
-                    <td className="py-4 px-6 text-gray-700">{student.class}</td>
-                    <td className="py-4 px-6 text-gray-700">{student.age}</td>
-                    <td className="py-4 px-6 flex gap-2">
-                      <button
-                        className="bg-yellow-500 text-white px-4 py-2 rounded-full font-semibold hover:bg-yellow-600 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-yellow-300 shadow-md"
-                        onClick={() => handleEdit(student)}
-                      >
-                        Sửa
-                      </button>
-                      <button
-                        className="bg-orange-500 text-white px-4 py-2 rounded-full font-semibold hover:bg-orange-600 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-orange-300 shadow-md"
-                        onClick={() => handleDelete(student.id)}
-                      >
-                        Xoá
-                      </button>
-                    </td>
-                  </>
-                )}
-              </tr>
-            ))}
-          </tbody>
+          {filteredStudents.map((student) => (
+            <StudentItem
+              key={student.id}
+              student={student}
+              isEditing={editId === student.id}
+              editName={editName}
+              editClass={editClass}
+              editAge={editAge}
+              onEditChange={(field, value) => {
+                if (field === 'name') setEditName(value);
+                if (field === 'class') setEditClass(value);
+                if (field === 'age') setEditAge(value);
+              }}
+              onSaveEdit={handleSaveEdit}
+              onCancelEdit={handleCancelEdit}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+            />
+          ))}
+
         </table>
       </div>
     </div>
