@@ -9,10 +9,16 @@ function App() {
     { id: 3, name: 'Lê Văn C', class: 'CNTT1', age: 19 },
   ]);
 
-  // State cho form input
+  // State cho form thêm sinh viên
   const [name, setName] = useState('');
   const [className, setClassName] = useState('');
   const [age, setAge] = useState('');
+
+  // State cho form sửa sinh viên
+  const [editId, setEditId] = useState(null);
+  const [editName, setEditName] = useState('');
+  const [editClass, setEditClass] = useState('');
+  const [editAge, setEditAge] = useState('');
 
   // Hàm xử lý xoá sinh viên
   const handleDelete = (id) => {
@@ -36,6 +42,42 @@ function App() {
     setName('');
     setClassName('');
     setAge('');
+  };
+
+  // Hàm bắt đầu chỉnh sửa
+  const handleEdit = (student) => {
+    setEditId(student.id);
+    setEditName(student.name);
+    setEditClass(student.class);
+    setEditAge(student.age);
+  };
+
+  // Hàm lưu chỉnh sửa
+  const handleSaveEdit = (e) => {
+    e.preventDefault();
+    if (!editName || !editClass || !editAge) {
+      alert('Vui lòng nhập đầy đủ thông tin!');
+      return;
+    }
+    setStudents(
+      students.map((student) =>
+        student.id === editId
+          ? { ...student, name: editName, class: editClass, age: parseInt(editAge) }
+          : student
+      )
+    );
+    setEditId(null);
+    setEditName('');
+    setEditClass('');
+    setEditAge('');
+  };
+
+  // Hàm hủy chỉnh sửa
+  const handleCancelEdit = () => {
+    setEditId(null);
+    setEditName('');
+    setEditClass('');
+    setEditAge('');
   };
 
   return (
@@ -95,17 +137,68 @@ function App() {
                 key={student.id}
                 className="border-b border-gray-100 hover:bg-blue-50 transition-colors duration-300"
               >
-                <td className="py-4 px-6 text-gray-700 font-medium">{student.name}</td>
-                <td className="py-4 px-6 text-gray-700">{student.class}</td>
-                <td className="py-4 px-6 text-gray-700">{student.age}</td>
-                <td className="py-4 px-6">
-                  <button
-                    className="bg-orange-500 text-white px-5 py-2 rounded-full font-semibold hover:bg-orange-600 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-orange-300 shadow-md"
-                    onClick={() => handleDelete(student.id)}
-                  >
-                    Xoá
-                  </button>
-                </td>
+                {editId === student.id ? (
+                  <>
+                    <td className="py-4 px-6">
+                      <input
+                        type="text"
+                        value={editName}
+                        onChange={(e) => setEditName(e.target.value)}
+                        className="border border-gray-300 rounded-lg px-2 py-1 w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
+                      />
+                    </td>
+                    <td className="py-4 px-6">
+                      <input
+                        type="text"
+                        value={editClass}
+                        onChange={(e) => setEditClass(e.target.value)}
+                        className="border border-gray-300 rounded-lg px-2 py-1 w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
+                      />
+                    </td>
+                    <td className="py-4 px-6">
+                      <input
+                        type="number"
+                        value={editAge}
+                        onChange={(e) => setEditAge(e.target.value)}
+                        className="border border-gray-300 rounded-lg px-2 py-1 w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
+                      />
+                    </td>
+                    <td className="py-4 px-6 flex gap-2">
+                      <button
+                        onClick={handleSaveEdit}
+                        className="bg-green-500 text-white px-4 py-2 rounded-full font-semibold hover:bg-green-600 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-green-300 shadow-md"
+                      >
+                        Lưu
+                      </button>
+                      <button
+                        onClick={handleCancelEdit}
+                        className="bg-gray-500 text-white px-4 py-2 rounded-full font-semibold hover:bg-gray-600 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-gray-300 shadow-md"
+                      >
+                        Hủy
+                      </button>
+                    </td>
+                  </>
+                ) : (
+                  <>
+                    <td className="py-4 px-6 text-gray-700 font-medium">{student.name}</td>
+                    <td className="py-4 px-6 text-gray-700">{student.class}</td>
+                    <td className="py-4 px-6 text-gray-700">{student.age}</td>
+                    <td className="py-4 px-6 flex gap-2">
+                      <button
+                        className="bg-yellow-500 text-white px-4 py-2 rounded-full font-semibold hover:bg-yellow-600 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-yellow-300 shadow-md"
+                        onClick={() => handleEdit(student)}
+                      >
+                        Sửa
+                      </button>
+                      <button
+                        className="bg-orange-500 text-white px-4 py-2 rounded-full font-semibold hover:bg-orange-600 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-orange-300 shadow-md"
+                        onClick={() => handleDelete(student.id)}
+                      >
+                        Xoá
+                      </button>
+                    </td>
+                  </>
+                )}
               </tr>
             ))}
           </tbody>
